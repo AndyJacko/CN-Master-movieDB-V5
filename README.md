@@ -133,13 +133,13 @@ node src/app --action updateMovie --id 16 --movie "Bugsy Malone, Jodie Foster, 1
 ### Delete Movie
 
 // Error: Unknown ID Format\
-node src/app --action delete --id 123
+node src/app --action deleteMovie --id
 
-// Error: No Movie Found With ID: 634704004304e2c9d1ce1371\
-node src/app --action delete --id 634704004304e2c9d1ce1371
+// Error: No Movie Found With ID: 0\
+node src/app --action deleteMovie --id 0
 
 // Movie Deleted + Details\
-node src/app --action delete --id 6347ea7eb3ced99c7b0da345
+node src/app --action deleteMovie --id 16
 
 ---
 

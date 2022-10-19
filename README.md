@@ -64,7 +64,7 @@ node src/app --action readMovie --search actor --val "Gregory Peck"
 // Error: Unknown Director Format\
 node src/app --action readMovie --search director --val
 
-// Error: Nothing Found For Director: "John Doe"\
+// Error: Director: "John Doe" Not Found\
 node src/app --action readMovie --search director --val "John Doe"
 
 // Returns Search Results\
@@ -77,7 +77,7 @@ node src/app --action readMovie --search director --val "Richard Donner"
 // Error: Unknown Genre Format\
 node src/app --action readMovie --search genre --val
 
-// Error: Nothing Found For Genre: "xxxx"\
+// Error: Genre: "xxxx" Not Found\
 node src/app --action readMovie --search genre --val xxxx
 
 // Returns Search Results\
@@ -90,8 +90,8 @@ node src/app --action readMovie --search genre --val Horror
 // Error: Unknown Release Year Format\
 node src/app --action readMovie --search released --val
 
-// Error: Nothing Found For Release Year: "0000"\
-node src/app --action readMovie --search released --val 0000
+// Error: Nothing Found For Release Year: "0"\
+node src/app --action readMovie --search released --val 0
 
 // Returns Search Results\
 node src/app --action readMovie --search released --val 1976
@@ -103,7 +103,7 @@ node src/app --action readMovie --search released --val 1976
 // Error: Unknown Rating Format\
 node src/app --action readMovie --search rating --val
 
-// Error: Nothing Found For Rating: "0"\
+// Error: Rating: "0" Not Found\
 node src/app --action readMovie --search rating --val 0
 
 // Returns Search Results\

@@ -1,5 +1,16 @@
 const Movie = require("../../models/movie");
 const Director = require("../../models/director");
+const Genre = require("../../models/genre");
+const Rating = require("../../models/rating");
+
+const getDirector = async (id) => {
+  const res = await Director.findAll({ where: { id: id } });
+  console.log(res)
+};
+
+const getGenre = async (id) => {};
+
+const getRating = async (id) => {};
 
 const displayAllMovies = (movies) => {
   console.log(`\n\nANDY'S MOVIE DATABASE\n---------------------\n`);
@@ -115,18 +126,24 @@ exports.readMovies = async (search, val) => {
       case "director":
         if (val !== "" && val !== true) {
           try {
-            const getDirector = await Director.find({ where: { name: val } });
+            const getDirector = await Director.findAll({
+              where: { name: val },
+            });
 
-            console.log(getDirector);
+            if (getDirector[0]) {
+              const selectedMovies = await Movie.findAll({
+                where: { director: getDirector[0].id },
+              });
 
-            //   const selectedMovies = await Movie.find({ director: val });
-
-            //   if (selectedMovies.length > 0) {
-            //     foundMovie = true;
-            //     displaySearchedMovies(selectedMovies);
-            //   } else {
-            //     error = `Nothing Found For Director: "${val}"`;
-            //   }
+              if (selectedMovies[0]) {
+                foundMovie = true;
+                displaySearchedMovies(selectedMovies);
+              } else {
+                error = `Nothing Found For Director: "${val}"`;
+              }
+            } else {
+              error = `Director: "${val}" Not Found`;
+            }
           } catch (err) {
             error = err;
           }
@@ -135,62 +152,84 @@ exports.readMovies = async (search, val) => {
         }
         break;
 
-      // case "genre":
-      //   if (val !== "" && val !== true) {
-      //     try {
-      //       const selectedMovies = await Movie.find({ genre: val });
+      case "genre":
+        if (val !== "" && val !== true) {
+          try {
+            const getGenre = await Genre.findAll({
+              where: { name: val },
+            });
 
-      //       if (selectedMovies.length > 0) {
-      //         foundMovie = true;
-      //         displaySearchedMovies(selectedMovies);
-      //       } else {
-      //         error = `Nothing Found For Genre: "${val}"`;
-      //       }
-      //     } catch (err) {
-      //       error = err;
-      //     }
-      //   } else {
-      //     error = "Unknown Genre Format";
-      //   }
-      //   break;
+            if (getGenre[0]) {
+              const selectedMovies = await Movie.findAll({
+                where: { genre: getGenre[0].id },
+              });
 
-      // case "released":
-      //   if (val !== "" && val !== true) {
-      //     try {
-      //       const selectedMovies = await Movie.find({ released: val });
+              if (selectedMovies[0]) {
+                foundMovie = true;
+                displaySearchedMovies(selectedMovies);
+              } else {
+                error = `Nothing Found For Genre: "${val}"`;
+              }
+            } else {
+              error = `Genre: "${val}" Not Found`;
+            }
+          } catch (err) {
+            error = err;
+          }
+        } else {
+          error = "Unknown Genre Format";
+        }
+        break;
 
-      //       if (selectedMovies.length > 0) {
-      //         foundMovie = true;
-      //         displaySearchedMovies(selectedMovies);
-      //       } else {
-      //         error = `Nothing Found For Release Year: "${val}"`;
-      //       }
-      //     } catch (err) {
-      //       error = err;
-      //     }
-      //   } else {
-      //     error = "Unknown Release Year Format";
-      //   }
-      //   break;
+      case "released":
+        if (Number.isInteger(val)) {
+          try {
+            const selectedMovies = await Movie.findAll({
+              where: { released: val },
+            });
 
-      // case "rating":
-      //   if (val !== "" && val !== true) {
-      //     try {
-      //       const selectedMovies = await Movie.find({ rating: val });
+            if (selectedMovies.length > 0) {
+              foundMovie = true;
+              displaySearchedMovies(selectedMovies);
+            } else {
+              error = `Nothing Found For Release Year: "${val}"`;
+            }
+          } catch (err) {
+            error = err;
+          }
+        } else {
+          error = "Unknown Release Year Format";
+        }
+        break;
 
-      //       if (selectedMovies.length > 0) {
-      //         foundMovie = true;
-      //         displaySearchedMovies(selectedMovies);
-      //       } else {
-      //         error = `Nothing Found For Rating: "${val}"`;
-      //       }
-      //     } catch (err) {
-      //       error = err;
-      //     }
-      //   } else {
-      //     error = "Unknown Rating Format";
-      //   }
-      //   break;
+      case "rating":
+        if (Number.isInteger(val)) {
+          try {
+            const getRating = await Rating.findAll({
+              where: { id: val },
+            });
+
+            if (getRating[0]) {
+              const selectedMovies = await Movie.findAll({
+                where: { rating: getRating[0].id },
+              });
+
+              if (selectedMovies[0]) {
+                foundMovie = true;
+                displaySearchedMovies(selectedMovies);
+              } else {
+                error = `Nothing Found For Rating: "${val}"`;
+              }
+            } else {
+              error = `Rating: "${val}" Not Found`;
+            }
+          } catch (err) {
+            error = err;
+          }
+        } else {
+          error = "Unknown Rating Format";
+        }
+        break;
     }
   }
 

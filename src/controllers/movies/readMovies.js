@@ -1,16 +1,9 @@
+const { sequelize } = require("../../db/conn");
+
 const Movie = require("../../models/movie");
 const Director = require("../../models/director");
 const Genre = require("../../models/genre");
 const Rating = require("../../models/rating");
-
-const getDirector = async (id) => {
-  const res = await Director.findAll({ where: { id: id } });
-  console.log(res)
-};
-
-const getGenre = async (id) => {};
-
-const getRating = async (id) => {};
 
 const displayAllMovies = (movies) => {
   console.log(`\n\nANDY'S MOVIE DATABASE\n---------------------\n`);
@@ -22,7 +15,7 @@ const displayAllMovies = (movies) => {
           movie.actor
         }\nDirector: ${movie.director}\nGenre: ${movie.genre}\nReleased: ${
           movie.released
-        }\nRating: ${movie.rating}\n`
+        }\nRating: ${movie.rating} (${movie.rid})\n`
       );
     });
   } else {
@@ -40,7 +33,7 @@ const displaySearchedMovies = (movies) => {
           movie.actor
         }\nDirector: ${movie.director}\nGenre: ${movie.genre}\nReleased: ${
           movie.released
-        }\nRating: ${movie.rating}\n`
+        }\nRating: ${movie.rating} (${movie.rid})\n`
       );
     });
   } else {
@@ -54,7 +47,9 @@ exports.readMovies = async (search, val) => {
 
   if (!search) {
     try {
-      const allMovies = await Movie.findAll();
+      const [allMovies] = await sequelize.query(
+        "SELECT m.id, m.title, m.actor, d.name AS director, g.name AS genre, m.released, r.name AS rating, r.id AS rid FROM Movies AS m JOIN Directors AS d ON d.id = m.director JOIN Genres AS g ON g.id = m.genre JOIN Ratings AS r ON r.id = m.rating"
+      );
       foundMovie = true;
       displayAllMovies(allMovies);
     } catch (err) {
@@ -65,7 +60,9 @@ exports.readMovies = async (search, val) => {
       case "id":
         if (Number.isInteger(val)) {
           try {
-            const selectedMovie = await Movie.findAll({ where: { id: val } });
+            const [selectedMovie] = await sequelize.query(
+              `SELECT m.id, m.title, m.actor, d.name AS director, g.name AS genre, m.released, r.name AS rating, r.id AS rid FROM Movies AS m JOIN Directors AS d ON d.id = m.director JOIN Genres AS g ON g.id = m.genre JOIN Ratings AS r ON r.id = m.rating WHERE m.id = ${val}`
+            );
 
             if (selectedMovie[0]) {
               foundMovie = true;
@@ -84,9 +81,9 @@ exports.readMovies = async (search, val) => {
       case "title":
         if (val !== "" && val !== true) {
           try {
-            const selectedMovie = await Movie.findAll({
-              where: { title: val },
-            });
+            const [selectedMovie] = await sequelize.query(
+              `SELECT m.id, m.title, m.actor, d.name AS director, g.name AS genre, m.released, r.name AS rating, r.id AS rid FROM Movies AS m JOIN Directors AS d ON d.id = m.director JOIN Genres AS g ON g.id = m.genre JOIN Ratings AS r ON r.id = m.rating WHERE m.title = '${val}'`
+            );
 
             if (selectedMovie[0]) {
               foundMovie = true;
@@ -105,9 +102,9 @@ exports.readMovies = async (search, val) => {
       case "actor":
         if (val !== "" && val !== true) {
           try {
-            const selectedMovies = await Movie.findAll({
-              where: { actor: val },
-            });
+            const [selectedMovies] = await sequelize.query(
+              `SELECT m.id, m.title, m.actor, d.name AS director, g.name AS genre, m.released, r.name AS rating, r.id AS rid FROM Movies AS m JOIN Directors AS d ON d.id = m.director JOIN Genres AS g ON g.id = m.genre JOIN Ratings AS r ON r.id = m.rating WHERE m.actor = '${val}'`
+            );
 
             if (selectedMovies[0]) {
               foundMovie = true;
@@ -131,9 +128,9 @@ exports.readMovies = async (search, val) => {
             });
 
             if (getDirector[0]) {
-              const selectedMovies = await Movie.findAll({
-                where: { director: getDirector[0].id },
-              });
+              const [selectedMovies] = await sequelize.query(
+                `SELECT m.id, m.title, m.actor, d.name AS director, g.name AS genre, m.released, r.name AS rating, r.id AS rid FROM Movies AS m JOIN Directors AS d ON d.id = m.director JOIN Genres AS g ON g.id = m.genre JOIN Ratings AS r ON r.id = m.rating WHERE m.director = ${getDirector[0].id}`
+              );
 
               if (selectedMovies[0]) {
                 foundMovie = true;
@@ -160,9 +157,9 @@ exports.readMovies = async (search, val) => {
             });
 
             if (getGenre[0]) {
-              const selectedMovies = await Movie.findAll({
-                where: { genre: getGenre[0].id },
-              });
+              const [selectedMovies] = await sequelize.query(
+                `SELECT m.id, m.title, m.actor, d.name AS director, g.name AS genre, m.released, r.name AS rating, r.id AS rid FROM Movies AS m JOIN Directors AS d ON d.id = m.director JOIN Genres AS g ON g.id = m.genre JOIN Ratings AS r ON r.id = m.rating WHERE m.genre = ${getGenre[0].id}`
+              );
 
               if (selectedMovies[0]) {
                 foundMovie = true;
@@ -184,9 +181,9 @@ exports.readMovies = async (search, val) => {
       case "released":
         if (Number.isInteger(val)) {
           try {
-            const selectedMovies = await Movie.findAll({
-              where: { released: val },
-            });
+            const [selectedMovies] = await sequelize.query(
+              `SELECT m.id, m.title, m.actor, d.name AS director, g.name AS genre, m.released, r.name AS rating, r.id AS rid FROM Movies AS m JOIN Directors AS d ON d.id = m.director JOIN Genres AS g ON g.id = m.genre JOIN Ratings AS r ON r.id = m.rating WHERE m.released = ${val}`
+            );
 
             if (selectedMovies.length > 0) {
               foundMovie = true;
@@ -210,9 +207,9 @@ exports.readMovies = async (search, val) => {
             });
 
             if (getRating[0]) {
-              const selectedMovies = await Movie.findAll({
-                where: { rating: getRating[0].id },
-              });
+              const [selectedMovies] = await sequelize.query(
+                `SELECT m.id, m.title, m.actor, d.name AS director, g.name AS genre, m.released, r.name AS rating, r.id AS rid FROM Movies AS m JOIN Directors AS d ON d.id = m.director JOIN Genres AS g ON g.id = m.genre JOIN Ratings AS r ON r.id = m.rating WHERE m.rating = ${getRating[0].id}`
+              );
 
               if (selectedMovies[0]) {
                 foundMovie = true;

@@ -25,8 +25,8 @@ node src/app --action readMovie
 // Error: Unknown ID Format\
 node src/app --action readMovie --search id --val
 
-// Error: Nothing Found For ID: "63454bc95a1554790bd1cfb3"\
-node src/app --action readMovie --search id --val 63454bc95a1554790bd1cfb3
+// Error: Nothing Found For ID: "0"\
+node src/app --action readMovie --search id --val 0
 
 // Returns Search Results\
 node src/app --action readMovie --search id --val 5
@@ -81,7 +81,7 @@ node src/app --action readMovie --search genre --val
 node src/app --action readMovie --search genre --val xxxx
 
 // Returns Search Results\
-node src/app --action readMovie --search genre --val Horror
+node src/app --action readMovie --search genre --val Comedy
 
 ---
 

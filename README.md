@@ -355,7 +355,7 @@ node src/app --action updateRating --id 5 --rating "_rating name_"
 
 ---
 
-### Delete Genre
+### Delete Rating
 
 // Error: Unknown ID Format\
 node src/app --action deleteRating --id
